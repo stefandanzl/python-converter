@@ -1,0 +1,369 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Author {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+
+
+<!-- DataTables default styling -->
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+
+<!-- UI Processor CSS -->
+<link href="/static/assets/converter/converter.css" rel="stylesheet" />
+
+{% endblock stylesheets %}
+
+{% block body_class %} blog-author bg-gray-100 {% endblock body_class %}
+
+{% block content %}
+
+{% include "includes/navigation-light.html" %}
+
+<!-- START Blogs w/ 3 images & quote & text -->
+<section class="bg-white mt-5">
+  <div class="container">
+
+    <div class="row my-3">
+      <div class="col-12">
+        <div class="text-center">
+          <p class="my-4 text-sm">
+          <h1 class="text-primary" style="font-size: 1.5rem">
+            Free Python Converter Service
+          </h1>
+          <a target="_blank" class="text-decoration-underline"
+            href="https://github.com/app-generator/devtool-python-converter" target="_blank">Sources</a>
+          <span class="mx-1">&bull;</span>
+          <a target="_blank" class="text-decoration-underline"
+            href="https://github.com/app-generator/devtool-python-converter/blob/master/LICENSE.md" target="_blank">EULA
+            License</a>
+          </p>
+          <p class="my-4 text-sm">
+            <strong>Sources are Free</strong> for eLearning & Hobby Projects.
+            <br />
+            <span class="text-primary">
+              Usage in commercial projects requires a
+              <a class="fw-bold text-decoration-underline"
+                href="https://github.com/app-generator/devtool-python-converter/blob/master/LICENSE.md"
+                target="_blank">license</a>.
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row ">
+      <div class="col-md-6 mx-auto text-center">
+
+        {% if err %}
+
+        <p class="text-lead text-dark">
+          <span class="text-danger">ERROR</span>: {{ err|safe }}
+        </p>
+
+        <!-- Deploy IS ACTIVE -->
+
+        {% else %}
+
+        <h6 class="text-dark">
+          Simply drop your asset below.
+          </h5>
+          <p class="text-lead">
+            Supported Inputs: <strong>OpenAPI</strong> (JSON), <strong>Pandas DF</strong> (pkl), <strong>CSV</strong>
+            files
+          </p>
+
+          {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- END Blogs w/ 3 images & quote & text -->
+
+<section class="mt-3 pb-3">
+  <div class="container main-container">
+    <div class="row">
+      <div class="col-lg-10 col-md-12 col-12 m-auto text-center">
+        <div id="tab-select" class="tab-select">
+          <div class="tab-item tab-item-1 primary" id="tab-item-1" data-info="drop">drop a file or url</div>
+          <div class="tab-item tab-item-2 secondary" id="tab-item-2" data-info="dbms">enter DBMS remote url</div>
+        </div>
+        <div class="custom-file-uploader border-dashed" id="custom-file-uploader">
+          <form name="form">
+            <label for="file" id="file-upload-label" class="file-upload-label">drop your file or url here.</label>
+            <input type="file" id="file_upload" class="file_upload" name="file" accept=".yaml, .json, .csv, .pkl" />
+          </form>
+        </div>
+        <div class="dbms-container hidden border-dashed" id="dbms-container">
+          <form name="dbms-form">
+            <div id="dbms-flex-container" class="dbms-flex-container">
+              <div class="input-group input-group-sm">
+                <span id="inputGroup-sizing-sm" class="input-group-text">ip ( domain / subdomain ) : </span>
+                <input aria-describedby="inputGroup-sizing-sm" id="ip" type="text" name="ip" class="form-control" />
+              </div>
+              <div class="input-group input-group-sm">
+                <span id="inputGroup-sizing-sm" class="input-group-text">port : </span>
+                <input aria-describedby="inputGroup-sizing-sm" id="port" type="text" name="port" class="form-control" />
+              </div>
+              <div class="input-group input-group-sm">
+                <span id="inputGroup-sizing-sm" class="input-group-text">dbname : </span>
+                <input aria-describedby="inputGroup-sizing-sm" id="dbname" type="text" name="dbname"
+                  class="form-control" />
+              </div>
+              <div class="input-group input-group-sm">
+                <span id="inputGroup-sizing-sm" class="input-group-text">user : </span>
+                <input aria-describedby="inputGroup-sizing-sm" id="user" type="text" name="user" class="form-control" />
+              </div>
+              <div class="input-group input-group-sm">
+                <span id="inputGroup-sizing-sm" class="input-group-text">password : </span>
+                <input aria-describedby="inputGroup-sizing-sm" id="password" type="text" name="password"
+                  class="form-control" />
+              </div>
+              <div class="input-group input-group-sm">
+                <span id="inputGroup-sizing-sm" class="input-group-text">DB Driver : </span>
+                <select aria-describedby="inputGroup-sizing-sm" id="db-driver" type="text" name="db-driver"
+                  class="form-select">
+                  <option selected value="DB_SQLITE">SQLITE</option>
+                  <option value="DB_MYSQL">MYSQL</option>
+                  <option value="DB_PGSQL">POSTGRESQL</option>
+                </select>
+              </div>
+              <div class="hidden input-group input-group-sm" id="connection-container">
+                <span id="inputGroup-sizing-sm" class="input-group-text">connection : </span>
+                <input readonly aria-describedby="inputGroup-sizing-sm" id="connection" type="text" name="connection"
+                  class="form-control" />
+              </div>
+              <div class="input-group input-group-sm">
+                <span id="inputGroup-sizing-sm" class="input-group-text">table name : </span>
+                <select disabled aria-describedby="inputGroup-sizing-sm" id="table-name" type="text" name="table-name"
+                  class="form-select">
+                </select>
+              </div>
+
+              <div class="search-container">
+                <div class="button search" id="dbms-search">
+                  <div>CONNECT</div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="output-utills">
+          <div class="select-container hidden" id="select-container">
+            <select id="select-output" class="form-select output-select" aria-label="Default select example">
+              <option selected value="select output">select output</option>
+            </select>
+          </div>
+          <div class="generate-container hidden" id="generate-container">
+            <button id="generate" class="generate button">Generate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="m-3">
+  <div class="output-container hidden" id="output-container">
+    <div class="output-wrapper hidden" id="output-wrapper-1">
+      <div class="output-header">
+        <div class="output-title">flask</div>
+        <div class="utill copy-button" id="copy-button-1">
+          <div id="copy-state">
+            copy
+          </div>
+          <div>
+            <i class="fa-solid fa-copy"></i>
+          </div>
+        </div>
+      </div>
+      <div>
+        <!-- <pre class="output-1" id="output-1"></pre> -->
+        <div id="edit-container-1" class="edit-container hidden">
+          <div class="edit-wrapper">
+            <div class="select-title title-space">selected row: </div>
+            <div id="selected-row-1" class="selected-row selected-row-1"></div>
+          </div>
+          <div class="edit-wrapper">
+            <div>
+              <label class="type-label title-space" for="select-1">change the type to: </label>
+            </div>
+            <div>
+              <select name="select-1" id="select-1" class="select-1"></select>
+            </div>
+          </div>
+          <div class="edit-wrapper">
+            <button id="apply-change-1" class="button apply-button">Apply Change</button>
+          </div>
+        </div>
+        <pre class="output output-1" id="output-1"></pre>
+        <div class="validation-container" id="validation-container-1">
+          <div>
+            <button class="validate button hidden" id="validate-1">validate data</button>
+          </div>
+          <div>
+            <div class="result hidden" id="result-1">result</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="output-wrapper hidden" id="output-wrapper-2">
+      <div class="output-header">
+        <div class="output-title">django</div>
+        <div class="utill copy-button" id="copy-button-2">
+          <div id="copy-state">
+            copy
+          </div>
+          <div>
+            <i class="fa-solid fa-copy"></i>
+          </div>
+        </div>
+      </div>
+      <div>
+        <!-- <pre class="output-2" id="output-2"></pre> -->
+        <div id="edit-container-2" class="edit-container hidden">
+          <div class="edit-wrapper">
+            <div class="select-title title-space">selected row: </div>
+            <div id="selected-row-2" class="selected-row selected-row-2"></div>
+          </div>
+          <div class="edit-wrapper">
+            <div>
+              <label class="type-label title-space" for="select-2">change the type to: </label>
+            </div>
+            <div>
+              <select name="select-2" id="select-2" class="select-2"></select>
+            </div>
+          </div>
+          <div class="edit-wrapper">
+            <button id="apply-change-2" class="button apply-button">Apply Change</button>
+          </div>
+        </div>
+        <pre class="output output-2" id="output-2"></pre>
+        <div class="validation-container" id="validation-container-2">
+          <div>
+            <button class="validate button hidden" id="validate-2">validate data</button>
+          </div>
+          <div>
+            <div class="result hidden" id="result-2">result</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="m-3">
+  <div class="hidden iframe-container" id="iframe-container">
+    <iframe frameborder="0" id="data-table-frame" class="data-table-frame">
+    </iframe>
+  </div>
+  <div class="hidden iframe-container-x" id="iframe-container-x">
+    <iframe frameborder="0" id="data-table-frame-x" class="data-table-frame-x"></iframe>
+  </div>
+</section>
+
+<section class="m-3">
+  <div class="chart-flex hidden" id="chart-flex">
+    <div class="flex-select-chart-options" id="flex-select-chart-options">
+      <div class="chart-type">
+        <label for="select-chart-type">select chart type : </label>
+        <select name="select-chart-type" id="select-chart-type" class="select-1">
+          <option selected value=""></option>
+        </select>
+      </div>
+      <div class="column-1">
+        <label for="select-x">select x axis : </label>
+        <select name="select-x" id="select-x" class="select-1">
+          <option selected value=""></option>
+        </select>
+      </div>
+      <div class="column-2">
+        <label for="select-y">select y axis : </label>
+        <select name="select-y" id="select-y" class="select-1">
+          <option selected value=""></option>
+        </select>
+      </div>
+      <div title='select two columns to draw. make sure columns are suitable for charting'>
+        <i class="fa fa-info-circle" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="output-chart">
+      <canvas id="chart" class="chart"></canvas>
+    </div>
+  </div>
+</section>
+
+<section class="m-3">
+  <div class="export-container" id="export-container">
+    <div id="select-table-output-container" class="select-table-output-container hidden">
+      <div>
+        <label for="export-output-select">select a format to export : </label>
+        <select name="export-output-select" class="select-1" id="export-output-select">
+          <option value=""></option>
+        </select>
+      </div>
+    </div>
+    <!-- <div id="table-container"> -->
+    <div id="table-container" class="hidden">
+    </div>
+
+    <!-- </div> -->
+  </div>
+  <div id="export-preview-container" class="output-container hidden">
+    <div class="output-wrapper">
+      <div class="output-header">
+        <div class="output-title" id="export-preview-title">output</div>
+        <div id="download-preview" class="utill download-button">
+          <div>
+            download
+          </div>
+          <div>
+            <i class="fa fa-download" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <div id="prettyprint-container">
+        <div id="prettprint-table-container"></div>
+        <pre class="prettyprint output" id="prettyprint"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<!-- Soft Design -->
+<script src="/static/assets/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+
+<!-- FA Fonts -->
+<script src="https://kit.fontawesome.com/9dfa2931b4.js" crossorigin="anonymous"></script>
+
+<!-- JS Plugins: Charts, Data tables -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@4.0.8" type="text/javascript"></script>
+
+<!-- UI Processor JS -->
+<script defer type="text/javascript" src="/static/assets/converter/converter.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/12.0.4/sql-formatter.min.js"
+  integrity="sha512-RQyV6UByz4KZZZtZLtQnxaqRLQ46x0sKtBcwz7svQeC2HdZavOVplrQzpes1lW5BYr1hz/PjW9dOOwOh97wlSw=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- <script
+  src="http://spreadsheets.google.com/feeds/cells/1_z9OGyFnVKKvD2OidFNKF8vEXMzoddnLgbBCERLPgG8/0/public/basic?alt=json-in-script&callback=myFunc">
+  </script> -->
+<script>
+
+
+  function something() {
+
+    console.log(' whatever');
+  } </script>
+
+{% endblock javascripts %}

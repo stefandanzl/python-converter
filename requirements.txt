@@ -1,0 +1,11 @@
+Flask
+Flask_Cors
+Flask_Minify
+glom
+pandas
+peewee
+pymysql
+PyYAML
+requests
+Werkzeug
+google-api-python-client
